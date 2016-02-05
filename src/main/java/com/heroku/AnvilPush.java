@@ -207,6 +207,9 @@ public class AnvilPush extends AbstractHerokuBuildStep {
             this.useCache = useCache;
         }
 
+				public void checkRoles(org.jenkinsci.remoting.RoleChecker rc) throws SecurityException { }
+
+
         public Boolean invoke(File dir, VirtualChannel channel) throws IOException, InterruptedException {
             final Janvil janvil = new Janvil(config());
 

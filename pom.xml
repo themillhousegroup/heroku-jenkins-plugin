@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.400</version>
+        <version>2.2</version>
         <!-- which version of Jenkins is this plugin built against? -->
     </parent>
 
@@ -33,7 +33,7 @@
 
     <properties>
         <heroku-jenkins-plugin.version>${project.version}</heroku-jenkins-plugin.version>
-        <com.heroku.api.version>0.13</com.heroku.api.version>
+        <com.heroku.api.version>0.17-SNAPSHOT</com.heroku.api.version>
     </properties>
 
     <repositories>

@@ -132,6 +132,10 @@ public abstract class AbstractArtifactDeployment extends AbstractHerokuBuildStep
 
             return true;
         }
+
+				public void checkRoles(org.jenkinsci.remoting.RoleChecker rc) throws SecurityException {
+
+				}
     }
 
 

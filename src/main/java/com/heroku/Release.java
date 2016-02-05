@@ -46,6 +46,8 @@ public class Release extends AbstractHerokuBuildStep {
         listener.getLogger().println("Releasing slug to " + app.getName() + " ...");
 
         final String slugUrl = build.getWorkspace().child(ANVIL_SLUG_PATH).act(new FilePath.FileCallable<String>() {
+						public void checkRoles(org.jenkinsci.remoting.RoleChecker rc) throws SecurityException { }
+
             public String invoke(File slugUrlFile, VirtualChannel channel) throws IOException, InterruptedException {
                 return Util.loadFile(slugUrlFile);
             }

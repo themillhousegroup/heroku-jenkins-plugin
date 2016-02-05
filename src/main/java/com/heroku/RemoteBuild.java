@@ -76,6 +76,9 @@ public class RemoteBuild extends AbstractHerokuBuildStep {
 
             final boolean[] slugPushed = new boolean[]{false}; //TODO: use exit code
 
+						public void checkRoles(org.jenkinsci.remoting.RoleChecker rc) throws SecurityException { }
+
+
             public URL invoke(File workspace, VirtualChannel channel) throws IOException, InterruptedException {
                 final Janvil janvil = new Janvil(
                         new Config("")
