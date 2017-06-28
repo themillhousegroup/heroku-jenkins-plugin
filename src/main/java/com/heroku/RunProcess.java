@@ -2,7 +2,6 @@ package com.heroku;
 
 import com.heroku.api.App;
 import com.heroku.api.HerokuAPI;
-import com.heroku.api.request.run.RunResponse;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;

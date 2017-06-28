@@ -2,10 +2,6 @@ package com.heroku;
 
 import com.heroku.api.App;
 import com.heroku.api.HerokuAPI;
-import com.heroku.janvil.Config;
-import com.heroku.janvil.EventSubscription;
-import com.heroku.janvil.Janvil;
-import com.heroku.janvil.Manifest;
 import hudson.*;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -70,79 +66,7 @@ public class RemoteBuild extends AbstractHerokuBuildStep {
 
     @Override
     public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener, HerokuAPI api, App app) throws IOException, InterruptedException {
-        final String userAgent = new JenkinsUserAgentValueProvider().getLocalUserAgent();
-
-        final URL slugUrl = build.getWorkspace().act(new FilePath.FileCallable<URL>() {
-
-            final boolean[] slugPushed = new boolean[]{false}; //TODO: use exit code
-
-						public void checkRoles(org.jenkinsci.remoting.RoleChecker rc) throws SecurityException { }
-
-
-            public URL invoke(File workspace, VirtualChannel channel) throws IOException, InterruptedException {
-                final Janvil janvil = new Janvil(
-                        new Config("")
-                                .setConsumersUserAgent(userAgent)
-                                .setReadCacheUrl(useCache)
-                                .setWriteSlugUrl(true)
-                                .setWriteCacheUrl(true)
-                                .setEventSubscription(new EventSubscription<Janvil.Event>(Janvil.Event.class)
-                                        .subscribe(Janvil.Event.DIFF_START, new EventSubscription.Subscriber<Janvil.Event>() {
-                                            public void handle(Janvil.Event event, Object numTotalFiles) {
-                                                listener.getLogger().println("Workspace contains " + amt(numTotalFiles, "file"));
-                                            }
-                                        })
-                                        .subscribe(Janvil.Event.UPLOADS_START, new EventSubscription.Subscriber<Janvil.Event>() {
-                                            public void handle(Janvil.Event event, Object numDiffFiles) {
-                                                if (numDiffFiles == Integer.valueOf(0)) return;
-                                                listener.getLogger().println("Uploading " + amt(numDiffFiles, "new file") + "...");
-                                            }
-                                        })
-                                        .subscribe(Janvil.Event.UPLOADS_END, new EventSubscription.Subscriber<Janvil.Event>() {
-                                            public void handle(Janvil.Event event, Object numDiffFiles) {
-                                                if (numDiffFiles == Integer.valueOf(0)) return;
-                                                listener.getLogger().println("Upload complete");
-                                            }
-                                        })
-                                        .subscribe(Janvil.Event.BUILD_OUTPUT_LINE, new EventSubscription.Subscriber<Janvil.Event>() {
-                                            public void handle(Janvil.Event event, Object data) {
-                                                listener.getLogger().println(data);
-                                                slugPushed[0] |= (String.valueOf(data).contains("Success, slug is ")); //TODO: use exit code
-                                            }
-                                        })));
-
-                final Manifest manifest = new Manifest(workspace);  // TODO: allow for something other than workspace root?
-                new DirScanner.Glob(globIncludes, globExcludes).scan(workspace, new FileVisitor() {
-                    @Override
-                    public void visit(File f, String relativePath) throws IOException {
-                        if (f.isFile()) {
-                            manifest.add(f);
-                        }
-                    }
-                });
-
-                slugPushed[0] = false; //TODO: use exit code
-
-                final Map<String, String> buildEnvMap = MappingConverter.convert(buildEnv);
-
-                // expand with jenkins env vars TODO: make this optional?
-                final EnvVars jenkinsEnv = build.getEnvironment(listener);
-                for (Map.Entry<String, String> e : buildEnvMap.entrySet()) {
-                    e.setValue(jenkinsEnv.expand(e.getValue()));
-                }
-
-                final String slugUrl = janvil.build(manifest, buildEnvMap, buildpackUrl);
-
-                //TODO: use exit code
-                if (!slugPushed[0]) {
-                    throw new IllegalStateException("Remote Build failed."); //TODO
-                }
-
-                return new URL(slugUrl);
-            }
-        });
-
-        return true;
+		throw new IllegalStateException("Remote Build not supported - JANVIL is not available."); 
     }
 
     private static String amt(Object qty, String counter) {
